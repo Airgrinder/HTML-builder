@@ -6,20 +6,22 @@ const style = p + '/project-dist/style.css';
 const template = p + '/project-dist/index.html';
 
 async function createDir(dir) {
-    fs.stat(dir, function (err) {
-        if (!err) {
-            return;
-        } else if (err.code === 'ENOENT') {
-            fs.mkdir(dir, err => {
-                if (err) throw err;
-            });
-        }
-    });
+    try {
+        await fs.promises.mkdir(dir, { recursive: true });
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 async function createProjectDir(){
-    await createDir(p + '/project-dist');
-    await createDir(p + '/project-dist/assets');
+    const dirs = await fs.promises.readdir(p + '/assets');
+    for (const dir of dirs) {
+        await createDir(p + '/project-dist/assets/' + dir);
+        const files = await fs.promises.readdir(p + '/assets/' + dir);
+        for (const file of files) {
+            await fs.promises.copyFile(p + '/assets/' + dir + '/' + file, p + '/project-dist/assets/' + dir + '/' + file);
+        }
+    }
 }
 
 createProjectDir()
