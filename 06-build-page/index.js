@@ -5,7 +5,7 @@ const p = (__dirname);
 const style = p + '/project-dist/style.css';
 const template = p + '/project-dist/index.html';
 
-function createDir(dir) {
+async function createDir(dir) {
     fs.stat(dir, function (err) {
         if (!err) {
             return;
@@ -17,8 +17,12 @@ function createDir(dir) {
     });
 }
 
-createDir(p + '/project-dist');
-createDir(p + '/project-dist/assets');
+async function createProjectDir(){
+    await createDir(p + '/project-dist');
+    await createDir(p + '/project-dist/assets');
+}
+
+createProjectDir()
 
 try {
     fs.readdir(p + '/assets', (err, dirs) => {
@@ -39,11 +43,11 @@ try {
     console.error(err);
 }
 
-function createFile(file) {
-    fs.writeFile(file, '', () => {});
+async function createFile(file) {
+    await fs.writeFile(file, '', () => {});
 }
 
-function checkFile(file) {
+async function checkFile(file) {
     fs.stat(file, function (err) {
         if (err == null) {
             return;
@@ -55,8 +59,12 @@ function checkFile(file) {
     });
 }
 
-checkFile(template);
-checkFile(style);
+async function createProjectFiles() {
+    await checkFile(template);
+    await checkFile(style);
+}
+
+createProjectFiles()
 
 async function buildPage() {
     try {
