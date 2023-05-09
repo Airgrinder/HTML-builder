@@ -28,14 +28,15 @@ try {
     fs.readdir(p + '/assets', (err, dirs) => {
         if (err) throw err;
         for (const dir of dirs) {
-            createDir(p + '/project-dist/assets/' + dir);
-            fs.readdir(p + '/assets/' + dir, (err, files) => {
-                if (err) throw err;
-                for (const file of files) {
-                    fs.copyFile(p + '/assets/' + dir + '/' + file, p + '/project-dist/assets/' + dir + '/' + file, err => {
-                        if (err) throw err;
-                    });
-                }
+            createDir(p + '/project-dist/assets/' + dir).then(r => {
+                fs.readdir(p + '/assets/' + dir, (err, files) => {
+                    if (err) throw err;
+                    for (const file of files) {
+                        fs.copyFile(p + '/assets/' + dir + '/' + file, p + '/project-dist/assets/' + dir + '/' + file, err => {
+                            if (err) throw err;
+                        });
+                    }
+                });
             });
         }
     });
